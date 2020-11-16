@@ -1,9 +1,9 @@
 import React, {useEffect, useState, useRef} from 'react'
 import {View, Text, TouchableOpacity, StyleSheet, TextInput, Alert} from 'react-native'
-import GenericHeader from './GenericHeader'
+import GenericHeader from '../GenericHeader'
 import { Ionicons } from '@expo/vector-icons'; 
-import CameraView from './CameraView';
-import api from "./api"
+import CameraView from '../CameraView';
+import api from "../api"
 
 /**
  * 
@@ -12,6 +12,7 @@ import api from "./api"
 export default function AddMachine(props) {
     const [QRCodeLocal, setQRCodeLocal] = useState(null)
     const [machineName, setMachineName] = useState(null)
+    const [machineWeightIncrement, setMachineWeightIncrement] = useState(null)
     const [showCamera, setShowCamera] = useState(false)
     const [saveButtonDisabled, setSaveButtonDisabled] = useState(true)
 
@@ -31,7 +32,7 @@ export default function AddMachine(props) {
     }
     
     const handleAddMachine = () => {
-        api.addMachine(QRCodeLocal,machineName)
+        api.machines.create(QRCodeLocal,machineName,machineWeightIncrement)
         .then( (id) => {console.log("Finished saving machine.",id); props.afterSaveOrCancel(id)} )
         .catch( (err) => {console.log(err); Alert.alert(`Machine could not be saved. ${err}`)})
     }
@@ -52,6 +53,9 @@ export default function AddMachine(props) {
 
             <View style={styles.inputLabel}><Text style={{color: "gray",}}>Name</Text></View>
             <TextInput style={styles.input} value={machineName} onChangeText={ txt => setMachineName(txt)} />
+
+            <View style={styles.inputLabel}><Text style={{color: "gray",}}>Weight Increment</Text></View>
+            <TextInput style={styles.input} value={machineWeightIncrement} onChangeText={ txt => setMachineWeightIncrement(txt.replace(/,+|\.+/g,""))} keyboardType="number-pad" />
 
             <View style={{flexDirection: "row", alignItems: "center"}}>
                 <TouchableOpacity style={saveButtonDisabled ? {...styles.button, backgroundColor: "lightgray"} : {...styles.button, backgroundColor: "lightblue"}} onPress={handleAddMachine} disabled={saveButtonDisabled}><Text style={saveButtonDisabled ? {color: "gray"} : {color: "black"}}>Save</Text></TouchableOpacity>

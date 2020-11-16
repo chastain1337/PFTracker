@@ -1,10 +1,14 @@
 import React, {useState} from 'react';
 import {Text, View, TextInput, TouchableOpacity, StyleSheet, Alert} from 'react-native'
-import AddMachine from './AddMachine';
+import AddMachine from './machines/AddMachine';
+import ViewMachines from "./machines/ViewMachines"
 import api from "./api"
+
+
 export default function Settings() {
     const [sql,setSQL] = useState("");
     const [showAddMachine,setShowAddMachine] = useState(false);
+    const [showViewMachines, setShowViewMachines] = useState(false);
 
     const handleRunSQL = async () => {
         api.evaluateSql(sql)
@@ -23,8 +27,9 @@ export default function Settings() {
         }
     }
 
-    if (showAddMachine) return <AddMachine QRCode={null} afterSaveOrCancel={handleAfterAddMachineSaveOrCancel}/>
+    if (showViewMachines) return <ViewMachines onReturn={()=>setShowViewMachines(false)} allowAdd={true} allowEdit={true} />
 
+    
     return(
         <View>
             <Text>Settings (Admin)</Text>
@@ -37,10 +42,11 @@ export default function Settings() {
             </View>
 
             <View>
-                <TouchableOpacity style={styles.bigButton} onPress={() => setShowAddMachine(true)}>
-                    <Text style={{fontSize: 16}}>Add Machine</Text>
+                <TouchableOpacity style={styles.bigButton} onPress={() => setShowViewMachines(true)}>
+                    <Text style={{fontSize: 16}}>View Machines</Text>
                 </TouchableOpacity>
             </View>
+
         </View>
     )
 }
